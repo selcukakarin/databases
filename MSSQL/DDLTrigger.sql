@@ -1,0 +1,27 @@
+create trigger TRG on database
+with execute as 'dbo'
+	for
+	CREATE_INDEX,ALTER_INDEX,DROP_INDEX,
+	CREATE_FULLTEXT_INDEX,ALTER_FULLTEXT_INDEX,DROP_FULLTEXT_INDEX,
+	CREATE_SPATIAL_INDEX,
+	CREATE_XML_INDEX,
+	CREATE_TABLE,ALTER_TABLE,DROP_TABLE,
+	RENAME
+as
+begin
+declare @TRIGGERXML XML;
+	select @TRIGGERXML=EVENTDATA();
+
+	insert into TABLECHANGES(
+		DATE_,LOGIN_NAME,SCHEMA_NAME,TARGET_OBJECT_NAME,OBJECT_NAME,NEW_OBJECTNAME,SQL,STATUS_)
+	select
+		GETDATE(),
+		ORIGINAL_LOGIN(),
+		@TRIGGERXML,value('(/EVENT_INSTANCE/SchemaName)[1]','nvarchar(120)'),
+		@TRIGGERXML,value('(/EVENT_INSTANCE/TargetObjectName)[1]','nvarchar(120)'),
+		@TRIGGERXML,value('(/EVENT_INSTANCE/ObjectName)[1]','nvarchar(120)'),
+		@TRIGGERXML,value('(/EVENT_INSTANCE/TargetObjectName)[1]','nvarchar(120)'),
+		@TRIGGERXML,value('(/EVENT_INSTANCE/NewObjectName)[1]','nvarchar(120)'),
+		@TRIGGERXML,value('(/EVENT_INSTANCE/TSQLCommand)[1]','nvarchar(max)'),
+		0;
+end

@@ -1,0 +1,5 @@
+select DBO.TRANSLATE('Furkan, ata bak','TR','EN')
+select DBO.TRANSLATE('Selçuk film izle','TR','EN')
+select DBO.TRANSLATE('Samet gel','TR','EN')
+select DBO.TRANSLATE('Deneme','TR','EN')
+select DBO.TRANSLATE('What the hell','EN','TR')
